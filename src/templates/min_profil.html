@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>Hei {{ session.user.fornavn }} {{ session.user.etternavn }}!</h1>
+
+    <label for="fornavn">Ditt fornavn</label>
+    <input name="fornavn" id="fornavn" value="{{ session.user.fornavn }}">
+
+{% endblock %}

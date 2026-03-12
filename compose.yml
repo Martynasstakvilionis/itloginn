@@ -1,0 +1,6 @@
+services:
+  app:
+    build: .
+    container_name: Min-Kule-App
+    ports:
+      - "5000:5000"

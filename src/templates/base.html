@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ title or "Fancy App" }}</title>
+    {% include "styles.html" %}
+</head>
+<body class="bg-gray-800 text-white">
+    <header>
+        {% block header %}Logo.{% endblock %}
+        <nav>
+            {% block nav %}
+                <a href="/">Hjem</a>
+                <a href="/min-profil">Profil</a>
+                {% if not session.logged_in %}
+                <a href="/register">Registrer</a>
+                <a href="/log-in">Logg inn</a>
+                {% else %}
+                <a href="/log-out">Logg ut</a>
+                {% endif %}
+            {% endblock %}
+        </nav>
+        {% if session.user %}
+        <p>Hei {{ session.user.fullt_navn }}!</p>
+        {% endif %}
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        {% block footer %}
+            {% include "footer.html" %}
+        {% endblock %}
+    </footer>
+</body>
+</html>
