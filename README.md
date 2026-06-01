@@ -1,18 +1,6 @@
-# Flask Autentiserings Eksempel
-
-Hvordan kjøre:
+# Hvordan kjøre:
 
 ```python
 pip install -r requirements.txt
-python run.py
+python main.py
 ```
-
-## Hosting
-
-Du kan hoste nettsiden med docker:
-
-```bash
-docker compose up -d
-```
-
-Besøk http://localhost:5000
