@@ -3,6 +3,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 class="text-2xl">Velkommen!</h1>
-    <p>Til min flotte nettside</p>
+    <h1 class="text-2xl">Velkommen! {{ session.get("user").username }}</h1>
+    <p>Til min tøffe nettside</p>
 {% endblock %}

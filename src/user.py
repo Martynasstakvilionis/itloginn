@@ -1,41 +1,21 @@
-from dataclasses import dataclass
 from auth import hash_password, is_correct_password
+from flask_sqlalchemy import SQLAlchemy
 
-import sqlite3
+db = SQLAlchemy()
 
-DATABASE = "test.db"
+class User(db.Model):
+    __tablename__ = 'users'
+    
+    username = db.Column(db.String(80), primary_key=True, unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    fornavn = db.Column(db.String(100), nullable=False)
+    etternavn = db.Column(db.String(100), nullable=False)
 
-@dataclass
-class User:
-    username: str
-    password: str
-
-    fornavn: str
-    etternavn: str
-
-    _load_from_db: bool = False
-
-    def __post_init__(self):
-        if self._load_from_db:
-            return
-        self.username = self.username.lower()
-        self.password = hash_password(self.password, self.username)
-        self.save_to_db()
-
-    def save_to_db(self):
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
-        cursor.execute("""INSERT INTO users (
-            username,
-            password,
-            fornavn,
-            etternavn
-        ) VALUES (:username, 
-                  :password, 
-                  :fornavn, 
-                  :etternavn)""", self.__dict__)
-        conn.commit()
-        conn.close()
+    def __init__(self, username: str, password: str, fornavn: str, etternavn: str):
+        self.username = username.lower()
+        self.password = hash_password(password, self.username)
+        self.fornavn = fornavn
+        self.etternavn = etternavn
 
     def check_password(self, password: str) -> bool:
         return is_correct_password(password, self.username, self.password)
@@ -44,46 +24,24 @@ class User:
     def fullt_navn(self):
         return f"{self.fornavn} {self.etternavn}"
 
+    def save_to_db(self):
+        """Add user to database session and commit"""
+        db.session.add(self)
+        db.session.commit()
+
 def get_all() -> dict[str, User]:
-    data = {}
-
-    # SQL (tullball)
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users")
-
-    for row in cursor.fetchall():
-        # 0 = username, 1 = pass, 2 = fornavn, 3 = etternavn
-        data[row[0]] = User(*row, _load_from_db=True)
-
-    # Ferdig med SQL
-    conn.close()
-    return data
+    """Fetch all users and return as dictionary"""
+    users = User.query.all()
+    return {user.username: user for user in users}
 
 def get(username: str):
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
-
-    data = User(*cursor.fetchone(), _load_from_db=True)
-
-    conn.close()
-    return data
+    """Get a specific user by username"""
+    user = User.query.filter_by(username=username.lower()).first()
+    if not user:
+        raise ValueError(f"User {username} not found")
+    return user
 
 def init_db():
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS users (
-        username TEXT PRIMARY KEY,
-        password TEXT,
-        fornavn TEXT,
-        etternavn TEXT,
-        UNIQUE(username)
-    )
-    """)
-    conn.commit()
-    conn.close()
-
-init_db()
+    """Initialize database tables"""
+    db.create_all()
+    print("Database tables created/verified")
