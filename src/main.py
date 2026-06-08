@@ -100,10 +100,6 @@ def comment(post_id):
 
     if not comment_text:
         return redirect(f"/post/{post_id}")
-
-    # TODO: Lagre kommentar til database
-    # Eksempel struktur: { post_id: [comments], ... }
-
     return redirect(f"/post/{post_id}")
 
 

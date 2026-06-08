@@ -1,6 +1,12 @@
 import hashlib
+import os
+from dotenv import load_dotenv
 
-pepper = "123"  # TODO: Bruk .env
+load_dotenv()
+
+pepper = os.getenv("PEPPER")
+if not pepper:
+    raise RuntimeError("PEPPER is not set. Create a .env file with PEPPER=<secret>.")
 
 def hash_password(key: str,
                   salt: str) -> str:

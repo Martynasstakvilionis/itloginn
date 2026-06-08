@@ -2,7 +2,7 @@ import os
 
 class Config:
     """Database configuration for MySQL"""
-    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:Vogen2025@localhost/itloginn"
+    SQLALCHEMY_DATABASE_URI = os.getenv("LOGIN")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_pre_ping": True, 
