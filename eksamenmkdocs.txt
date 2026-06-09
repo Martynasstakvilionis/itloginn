@@ -1,0 +1,44 @@
+# ITLogin - Setup Guide
+
+Welcome! to this tuff tottorial !
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed on your computer:
+
+- **Python** 
+- **Git** - 
+- **Docker** (optional)
+
+## Step 1: Clone the Repository
+
+Open the terminal and run:
+
+git clone https://github.com/yourusername/itloginn.git
+cd itloginn
+
+
+## Step 3: Install Dependencies
+
+Install all Dependencies:
+
+```powershell
+pip install -r requirements.txt
+```
+
+## Step 4: Create a file called .env
+inside the env you need your own pepper and login
+```python
+PEPPER = 123
+LOGIN = mysql+pymysql://user:passord@localhost/mydb
+```
+
+## Step 5: Run the Application
+
+Start the Flask application:
+
+```powershell
+python main.py
+```
+
+go to `http://localhost:5000`
