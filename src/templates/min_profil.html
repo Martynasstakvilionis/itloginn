@@ -1,15 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <h2>Din profil</h2>
+    <p>Hei {{ session.user.fornavn }} {{ session.user.etternavn }}!</p>
 
-    <h1>Hei {{ session.user.fornavn }} {{ session.user.etternavn }}!</h1>
+    {% if error_msg %}
+    <div class="error">{{ error_msg }}</div>
+    {% endif %}
 
     <form method="POST" action="/update_profile">
+        <label for="username">Brukernavn</label>
+        <input name="username" id="username" type="text" value="{{ session.user.username }}" required>
+
+        <label for="password">Nytt passord</label>
+        <input name="password" id="password" type="password" required>
+
         <label for="fornavn">Ditt fornavn</label>
-        <input name="fornavn" id="fornavn" value="{{ session.user.fornavn }}">
+        <input name="fornavn" id="fornavn" type="text" value="{{ session.user.fornavn }}" required>
+
         <label for="etternavn">Ditt etternavn</label>
-        <input name="etternavn" id="etternavn" value="{{ session.user.etternavn }}">
-        <button type="submit">Oppdater</button>
+        <input name="etternavn" id="etternavn" type="text" value="{{ session.user.etternavn }}" required>
+
+        <button type="submit">Oppdater profil</button>
     </form>
 
+    <form method="POST" action="/delete_account" style="margin-top: 1rem;">
+        <button type="submit" style="background: #e74c3c; color: white;">Slett konto</button>
+    </form>
 {% endblock %}

@@ -1,26 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <h2>Registrer bruker</h2>
+
+    {% if error_msg %}
+    <div class="error">{{ error_msg }}</div>
+    {% endif %}
 
     <form action="{{ url_for('post_register') }}" method="post">
-        <br>
         <label for="username">Brukernavn</label>
-        <input id="username" name="username" required>
-        <br>
+        <input id="username" name="username" type="text" required>
+
         <label for="password">Passord</label>
         <input id="password" type="password" name="password" required>
-        <br>
-        <label for="fornavn">Fornavn</label>
-        <input id="fornavn" name="fornavn" required>
-        <br>
-        <label for="etternavn">Etternavn</label>
-        <input id="etternavn" name="etternavn" required>
-        <br>
-        <input type="submit">
-    </form>
-    {#
-        {"username":"brukernavnet",
-         "password":"passordet"} -> /register POST (request.form)
-    #}
 
+        <label for="fornavn">Fornavn</label>
+        <input id="fornavn" name="fornavn" type="text" required>
+
+        <label for="etternavn">Etternavn</label>
+        <input id="etternavn" name="etternavn" type="text" required>
+
+        <input type="submit" value="Registrer">
+    </form>
 {% endblock %}

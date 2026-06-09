@@ -8,32 +8,28 @@
     <title>{{ title or "Fancy App" }}</title>
     {% include "styles.html" %}
 </head>
-<body class="bg-gray-800 text-white">
+<body>
     <header>
-        {% block header %}Logo.{% endblock %}
+        <h1>ITLogin</h1>
         <nav>
-            {% block nav %}
-                <a href="/">Hjem</a>
-                <a href="/min-profil">Profil</a>
-                {% if not session.logged_in %}
-                <a href="/register">Registrer</a>
-                <a href="/log-in">Logg inn</a>
-                {% else %}
-                <a href="/log-out">Logg ut</a>
-                {% endif %}
-            {% endblock %}
+            <a href="/">Hjem</a>
+            <a href="/min-profil">Profil</a>
+            {% if not session.logged_in %}
+            <a href="/register">Registrer</a>
+            <a href="/log-in">Logg inn</a>
+            {% else %}
+            <a href="/log-out">Logg ut</a>
+            {% endif %}
         </nav>
         {% if session.user %}
-        <p>Hei {{ session.user.fullt_navn }}!</p>
+        <p>Hei {{ session.user.fornavn }}!</p>
         {% endif %}
     </header>
     <main>
         {% block content %}{% endblock %}
     </main>
     <footer>
-        {% block footer %}
-            {% include "footer.html" %}
-        {% endblock %}
+        {% include "footer.html" %}
     </footer>
 </body>
 </html>

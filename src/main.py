@@ -1,20 +1,18 @@
-# Algoritme som bruker salt & pepper X
-# Krypteringsfunksjon X
-
 from flask import Flask, render_template, request, redirect, session
 from decorators import login_required
 from werkzeug.exceptions import HTTPException
+from auth import hash_password
 from user import User, get_all, db, init_db
 from config import DevelopmentConfig
 from pprint import pprint
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
-app.secret_key = "3hfdsajfhskruk"
+app.secret_key = "3hfdsajfhskruk"  # dette burde vær gjemt i .env
 
 
 db.init_app(app)
 
-
+9
 with app.app_context():
     init_db()
     users = get_all()
@@ -43,7 +41,7 @@ def post_register():
     fornavn = request.form.get("fornavn", "").strip()
     etternavn = request.form.get("etternavn", "").strip()
 
-    # Validering: Hvis brukernavn / passord er tomt
+
     if not username or not password or not fornavn or not etternavn:
         return render_template("register.html",
                                error_msg="Alle felt må fylles ut.",
@@ -106,14 +104,15 @@ def comment(post_id):
 @app.route("/update_profile", methods=["POST"])
 @login_required
 def update_profile():
+    new_username = request.form.get("username", "").strip().lower()
+    password = request.form.get("password", "").strip()
     fornavn = request.form.get("fornavn", "").strip()
     etternavn = request.form.get("etternavn", "").strip()
 
-    if not fornavn or not etternavn:
+    if not new_username or not password or not fornavn or not etternavn:
         return render_template("min_profil.html",
                                error_msg="Alle felt må fylles ut.")
 
-    # Update user in database
     username = session.get("user", {}).get("username")
     if not username:
         return redirect("/log-in")
@@ -122,18 +121,54 @@ def update_profile():
     if not user:
         return redirect("/log-in")
 
-    user.fornavn = fornavn
-    user.etternavn = etternavn
-    # Commit the changes
-    db.session.commit()
+    if new_username != username:
+        existing_user = User.query.filter_by(username=new_username).first()
+        if existing_user:
+            return render_template("min_profil.html",
+                                   error_msg="Det nye brukernavnet er allerede i bruk.")
 
-    session["user"]["fornavn"] = fornavn
-    session["user"]["etternavn"] = etternavn
+        db.session.delete(user)
+        db.session.commit()
+
+        user = User(username=new_username,
+                    password=password,
+                    fornavn=fornavn,
+                    etternavn=etternavn)
+        db.session.add(user)
+        db.session.commit()
+
+        users.pop(username, None)
+        users[new_username] = user
+    else:
+        user.fornavn = fornavn
+        user.etternavn = etternavn
+        user.password = hash_password(password, user.username)
+        db.session.commit()
+
+    session["user"] = {"username": user.username,
+                        "fornavn": user.fornavn,
+                        "etternavn": user.etternavn}
 
     return redirect("/min-profil")
 
 
-# Dev mode:
+@app.route("/delete_account", methods=["POST"])
+@login_required
+def delete_account():
+    username = session.get("user", {}).get("username")
+    if not username:
+        return redirect("/log-in")
+
+    user = User.query.filter_by(username=username).first()                #eksamen
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+
+    users.pop(username, None)
+    session.clear()
+    return redirect("/")
+
+
 if __name__ == "__main__":
     app.run(debug=True)
 

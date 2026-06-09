@@ -3,6 +3,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1 class="text-2xl">Velkommen! {{ session.get("user").username }}</h1>
-    <p>Til min tøffe nettside</p>
+    {% if session.get("user") %}
+    <h2>Velkommen, {{ session.get("user").username }}!</h2>
+    {% else %}
+    <h2>Velkommen til ITLogin</h2>
+    {% endif %}
+    <p class="content-card">En sikker og enkel innloggingsløsning for dine behov.</p>
 {% endblock %}

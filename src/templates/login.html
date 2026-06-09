@@ -1,24 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <h2>Logg inn</h2>
+
+    {% if error_msg %}
+    <div class="error">{{ error_msg }}</div>
+    {% endif %}
 
     <form action="{{ url_for('post_login') }}" method="post">
-        <br>
         <label for="username">Brukernavn</label>
-        <input id="username" name="username" required value="{{ form.username if form }}">
-        <br>
+        <input id="username" name="username" type="text" required value="{{ form.username if form }}">
+
         <label for="password">Passord</label>
         <input id="password" type="password" name="password" required value="{{ form.password if form }}">
-        <br>
-        <input type="submit">
+
+        <input type="submit" value="Logg inn">
     </form>
 
     {% if redirect_to %}
-    <p>Sender deg til {{ redirect_to }}</p>
+    <p style="margin-top: 1rem; color: #00d4ff;">Sender deg til {{ redirect_to }}</p>
     {% endif %}
-
-    {% if error_msg %}
-    <p style="color:red;">{{ error_msg }}</p>
-    {% endif %}
-
 {% endblock %}
